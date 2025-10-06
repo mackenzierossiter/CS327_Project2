@@ -1,6 +1,6 @@
 import java.math.BigInteger;
 
-public class Project2 {
+public class ReeseSammiRossiterMackenzieRSA2 {
 
     // Returns number of bits in number in hex
     static int getNumBits(BigInteger number) {
