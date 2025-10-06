@@ -1,3 +1,12 @@
+// Authors: Mackenzie Rossiter & Sammi Reese
+// Project 2 Code
+// Date: 10/6/25
+
+
+// This work complies
+// with the JMU honor code. I did not give or receive unauthorized 
+// help on this assignment
+
 import java.math.BigInteger;
 
 public class ReeseSammiRossiterMackenzieRSA2 {
