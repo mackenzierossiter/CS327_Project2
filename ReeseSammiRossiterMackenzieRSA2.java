@@ -2,9 +2,8 @@
 // Project 2 Code
 // Date: 10/6/25
 
-
 // This work complies
-// with the JMU honor code. I did not give or receive unauthorized 
+// with the JMU honor code. I did not give or receive unauthorized
 // help on this assignment
 
 import java.math.BigInteger;
@@ -43,20 +42,40 @@ public class ReeseSammiRossiterMackenzieRSA2 {
         return encrypted;
     }
 
+    static BigInteger decryptCrt(BigInteger p, BigInteger q, BigInteger d, BigInteger c) {
+        BigInteger one = new BigInteger("1");
+
+        // Compute dp = d mod (p-1), dq = d mod (q-1)
+        BigInteger dp = d.mod(p.subtract(one));
+        BigInteger dq = d.mod(q.subtract(one));
+
+        // Compute the message mod p and mod q
+        BigInteger m1 = c.modPow(dp, p);
+        BigInteger m2 = c.modPow(dq, q);
+
+        // Combine results using CRT
+        BigInteger qInv = q.modInverse(p);
+        BigInteger h = (qInv.multiply(m1.subtract(m2))).mod(p);
+        BigInteger m = m2.add(h.multiply(q));
+
+        return m.mod(p.multiply(q));
+    }
 
     static BigInteger decrypt(BigInteger message, BigInteger d, BigInteger n) {
         BigInteger decrypted = message.modPow(d, n);
         return decrypted;
     }
 
-
     public static void main(String[] args) {
         // Set up
         BigInteger e = new BigInteger("65537");
-        BigInteger p = new BigInteger("bdf78a7a486847dc2fc6cccf45161dad36641ce09a1907ff5c5c088d3f9011135d0b77a75faabc6ff9d42499f9949b61ca5e32b5458b5240e2aafb18d9486bddbb80014b1f8945947eaafe6964a3ea96f345b2f0a93e7db100ab21c7b38d2e0d19fddfe8b8fcf8f593aae667edc15e76d9af847886e2db47a4b53243950eed016439c5874b5de2aba1065faeefdf1d9756ac8bc453b379ae18a85f3e911205b841f8da08ab52963b34661150938c2de16bf910a497049352422873a75531ca59", 16);
-        BigInteger q = new BigInteger("ff8b62ff55f9f7a5a279db0960921f1b9f04172996867293b3987b1ad49160a2539156bc2c56489a046ede63b34c91ac5fe897d7865c0b62c7eed50c71e62163a6f9795653c6c4e1ad69477739f92b39bb8b9c99d0c780b641abccb307f405f141668847c25fcf2305e62902e6e5325bace643097581bd14f36008c0c8b33e27d06615728dcaa293f18c6a350ab3b7f634a66a097ecedaac8421ca24f24123236f57b4f520739d949594bd6efb029609282c9e87622b0a16514789001df5f545", 16);
+        BigInteger p = new BigInteger(
+                "bdf78a7a486847dc2fc6cccf45161dad36641ce09a1907ff5c5c088d3f9011135d0b77a75faabc6ff9d42499f9949b61ca5e32b5458b5240e2aafb18d9486bddbb80014b1f8945947eaafe6964a3ea96f345b2f0a93e7db100ab21c7b38d2e0d19fddfe8b8fcf8f593aae667edc15e76d9af847886e2db47a4b53243950eed016439c5874b5de2aba1065faeefdf1d9756ac8bc453b379ae18a85f3e911205b841f8da08ab52963b34661150938c2de16bf910a497049352422873a75531ca59",
+                16);
+        BigInteger q = new BigInteger(
+                "ff8b62ff55f9f7a5a279db0960921f1b9f04172996867293b3987b1ad49160a2539156bc2c56489a046ede63b34c91ac5fe897d7865c0b62c7eed50c71e62163a6f9795653c6c4e1ad69477739f92b39bb8b9c99d0c780b641abccb307f405f141668847c25fcf2305e62902e6e5325bace643097581bd14f36008c0c8b33e27d06615728dcaa293f18c6a350ab3b7f634a66a097ecedaac8421ca24f24123236f57b4f520739d949594bd6efb029609282c9e87622b0a16514789001df5f545",
+                16);
         BigInteger N = p.multiply(q);
-
 
         // setup
         System.out.println("p = " + p.toString(16));
@@ -66,7 +85,7 @@ public class ReeseSammiRossiterMackenzieRSA2 {
         // Question 1
         System.out.println("Bit-length of N =  " + N.bitLength());
 
-        System.out.println("e = "+ e.toString(16));
+        System.out.println("e = " + e.toString(16));
 
         // used sage Math for part 1 of question 2
         // Question 2 part 2
@@ -82,16 +101,21 @@ public class ReeseSammiRossiterMackenzieRSA2 {
         BigInteger encrypted = encrypt(m, e, N);
         System.out.println("c = " + encrypted.toString(16));
 
-
-        //BigInteger message = new BigInteger(encrypted, 16);
+        // BigInteger message = new BigInteger(encrypted, 16);
         // Question 5
         long startTime = System.currentTimeMillis();
-        System.out.println("m2 = " + decrypt(encrypted, privateKey, N));
+
+        // part 1 flawed
+        //System.out.println("m2 = " + decrypt(encrypted, privateKey, N));
+
+        // part 2 real world (question 7)
+        System.out.println("m2 = " + decryptCrt(p, q, privateKey, encrypted));
+
         long endTime = System.currentTimeMillis();
         long decryptionTime = endTime - startTime;
         System.out.println("RSA Decryptions took " + decryptionTime + " milliseconds");
 
-
+        // question 6
         // getting kilobits per second
 
         // 1 gets bits per second
@@ -115,8 +139,26 @@ public class ReeseSammiRossiterMackenzieRSA2 {
 
         double gigaPerSecond = kiloBitPerSecond / 1000000.0;
 
-        System.out.println("RSA Decryption in terms of kilobits/second " + kiloBitPerSecond);
-        System.out.println("This speed is " + gigaPerSecond + " gigabit/second Internet speed.");
+        //System.out.println("RSA Decryption in terms of kilobits/second " + kiloBitPerSecond);
+        //System.out.println("This speed is " + gigaPerSecond + " gigabit/second Internet speed.");
+
+        //question 7 measuring
+        long startCrt = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            BigInteger encrypted2 = encrypt(m, e, N);
+            decryptCrt(p, q, privateKey, encrypted);
+        }
+
+        long endCrt = System.currentTimeMillis();
+        long totalMillisCrt = endCrt - startCrt;
+        double totalSecondsCRT = totalMillisCrt / 1000.0;
+        double decryptionsPerSecond = 1000.0 / totalSecondsCRT;
+        int totalBits = getNumBits(N);
+        double kiloBitsPerSecondCrt = (totalBits / 1000.0) * decryptionsPerSecond;
+        double gigaPerSecondCrt = kiloBitPerSecond / 1000000.0;
+
+        System.out.println("RSA Decryption in terms of kilobits/second " + kiloBitsPerSecondCrt);
+        System.out.println("This speed is " + gigaPerSecondCrt + " gigabit/second Internet speed.");
 
     }
 
