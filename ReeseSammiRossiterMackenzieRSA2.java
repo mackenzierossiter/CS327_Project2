@@ -53,11 +53,12 @@ public class ReeseSammiRossiterMackenzieRSA2 {
         System.out.println("p = " + p.toString(16));
         System.out.println("q = " + q.toString(16));
         System.out.println("N = " + N.toString(16));
+
         // Question 1
-        System.out.println("Bit-length of N =  " + Integer.toHexString(getNumBits(N)));
+        System.out.println("Bit-length of N =  " + N.bitLength());
 
         System.out.println("e = "+ e.toString(16));
-        
+
         // used sage Math for part 1 of question 2
         // Question 2 part 2
         // System.out.println("p has " + getNumBits(p) + " bits.");
@@ -88,7 +89,7 @@ public class ReeseSammiRossiterMackenzieRSA2 {
         long startTimeKilo = System.currentTimeMillis();
         for (int i = 0; i < 1000; i++) {
             BigInteger encrypted2 = encrypt(m, e, N);
-            decrypt(encrypted2, privateKey, N); 
+            decrypt(encrypted2, privateKey, N);
 
         }
         long endTimeKilo = System.currentTimeMillis();
