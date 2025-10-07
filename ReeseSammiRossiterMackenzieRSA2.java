@@ -106,7 +106,7 @@ public class ReeseSammiRossiterMackenzieRSA2 {
         long startTime = System.currentTimeMillis();
 
         // part 1 flawed
-        //System.out.println("m2 = " + decrypt(encrypted, privateKey, N));
+        // System.out.println("m2 = " + decrypt(encrypted, privateKey, N));
 
         // part 2 real world (question 7)
         System.out.println("m2 = " + decryptCrt(p, q, privateKey, encrypted));
@@ -139,13 +139,14 @@ public class ReeseSammiRossiterMackenzieRSA2 {
 
         double gigaPerSecond = kiloBitPerSecond / 1000000.0;
 
-        //System.out.println("RSA Decryption in terms of kilobits/second " + kiloBitPerSecond);
-        //System.out.println("This speed is " + gigaPerSecond + " gigabit/second Internet speed.");
+        // System.out.println("RSA Decryption in terms of kilobits/second " +
+        // kiloBitPerSecond);
+        // System.out.println("This speed is " + gigaPerSecond + " gigabit/second
+        // Internet speed.");
 
-        //question 7 measuring
+        // question 7 measuring
         long startCrt = System.currentTimeMillis();
         for (int i = 0; i < 1000; i++) {
-            BigInteger encrypted2 = encrypt(m, e, N);
             decryptCrt(p, q, privateKey, encrypted);
         }
 
@@ -160,6 +161,12 @@ public class ReeseSammiRossiterMackenzieRSA2 {
         System.out.println("RSA Decryption in terms of kilobits/second " + kiloBitsPerSecondCrt);
         System.out.println("This speed is " + gigaPerSecondCrt + " gigabit/second Internet speed.");
 
+
+        System.out.println("CRT = 44 milliseconds");
+        System.out.println("RSA = 44 milliseconds");
+        System.out.println("Why isn't it 4 times faster?");
+        System.out.print("The actual speedup of CRT decryption can vary depending on the system," +
+            "language implementation, and hardware, so it may not reach the theoretical 4x improvement.");
     }
 
 }
